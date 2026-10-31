@@ -30,3 +30,9 @@ Q2.2.a
 
 Q2.2.b
 voir code partie2
+
+Q2.2.c
+- Une méthode statique de fabrique est une méthode static déclarée dans la classe qui crée et retourne une instance de cette classe. Elle joue le rôle d’un constructeur, mais avec un nom explicite qui décrit la manière de créer l’objet.
+
+- Pourquoi on l’utilise ? PHP n’autorise qu’un seul constructeur par classe (pas de surcharge). Les méthodes de fabrique permettent d’avoir plusieurs façons de créer un objet (depuis un tableau, un JSON, un objet vide...).
+

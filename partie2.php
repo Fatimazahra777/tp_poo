@@ -27,7 +27,7 @@ public function __construct(
     public int $vitesse = 0
 ) {}*/
 
-//2.2
+//2.2.b
 class Personne {
     public string $nom;
     public string $prenom;
@@ -46,3 +46,19 @@ class Personne {
 $p1 = new Personne();   // création "vide"
 echo '<br>';
 $p2 = new Personne("Hachimi", "Sara");     // création avec infos
+
+
+//2.2.c
+class Personne {
+    public function __construct(
+        public string $nom = "",
+        public string $prenom = ""
+    ) {}
+
+    public static function depuisTableau(array $data): self {
+        return new self($data['nom'], $data['prenom']);
+    }
+}
+
+$p = Personne::depuisTableau(['nom' => 'Hachimi', 'prenom' => 'Sara']);
+echo $p->prenom . " " . $p->nom;   // Sara Hachimi
