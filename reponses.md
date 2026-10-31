@@ -29,3 +29,4 @@ Q2.2.a
 ​Car PHP ne supporte pas la surcharge de méthodes (plusieurs méthodes portant le même nom, comme __construct) dans une même classe. Une classe ne peut posséder qu'un seul constructeur.
 
 Q2.2.b
+voir code partie2
