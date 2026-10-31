@@ -1,5 +1,18 @@
-//partie 0
+partie 0:
 Quetion 3:
 $v1 et $v2 nepartagent pas la meme valeur de cette $marque, car la 1ere voiture de marque Toyota et la 2eme de marque Renault.
 
-//partie 1
+partie 1:
+Q1.1/
+- ​dateNaissance est déclaré comme private dans la classe. Cela veut dire qu'il est strictement interdit d'y accéder de l'extérieur (en dehors des accolades de la classe Personne). 
+
+- ​getAge() et cin est aussi déclaré comme private. Même chose : on ne peut pas l'appeler depuis le programme principal.
+Q1.2/
+Laisser cin en public est dangereux car il s'agit d'une donnée personnelle sensible. Cela permettrait à n'importe quel code externe de la modifier ou de la lire sans contrôle, violant ainsi le principe d'encapsulation et créant des failles de sécurité.
+Q1.3/
+Non, getAge() n'est pas inutile. Bien qu'elle soit privée, elle peut être appelée à l'intérieur d'une autre méthode (publique) de la même classe pour effectuer des calculs internes (comme calculer l'âge) sans que le code externe n'y accède directement.
+Q1.4/
+Non, le comportement depuis l'extérieur ne change pas. Un attribut protected reste inaccessible directement depuis le programme principal (exactement comme private), il protège la donnée de la même manière à l'extérieur.
+
+partie 2:
+

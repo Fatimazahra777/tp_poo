@@ -30,8 +30,6 @@ $v2->SetMarque("Renault");
 $v2->SetCouleur("Rourge");
 $v2->afficher();
 
-//Partie 1
-
 
 
 
