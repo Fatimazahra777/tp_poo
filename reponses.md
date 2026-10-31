@@ -22,14 +22,19 @@ Q2.1.a
 - ​new Voiture(120) : Provoque un comportement de conversion de type (ou une TypeError si strict_types=1 est activé), car le premier argument attend une string et on lui passe un int.
 
 Q2.1.b
-L'avantage est de réduire la verbosité du code : cela évite d'avoir à déclarer les propriétés en haut de la classe et de répéter les assignations ($this->x = $x;), car PHP s'en charge automatiquement à partir de PHP 8.
+public function __construct(
+    public string $couleur = "Blanche",
+    public int $vitesse = 0
+) {}
+
+- L'avantage est de réduire la verbosité du code : cela évite d'avoir à déclarer les propriétés en haut de la classe et de répéter les assignations ($this->x = $x;), car PHP s'en charge automatiquement à partir de PHP 8.
 
 Q2.2.a
-À l'exécution, cela provoque une erreur fatale (Fatal Error). 
+Fatal error: Cannot redeclare Personne::__construct().
 ​Car PHP ne supporte pas la surcharge de méthodes (plusieurs méthodes portant le même nom, comme __construct) dans une même classe. Une classe ne peut posséder qu'un seul constructeur.
 
 Q2.2.b
-voir code partie2
+Un seul constructeur avec des valeurs par défaut (string $nom = "", string $prenom = "") : new Personne() donne une création « vide » et new Personne("Hachimi", "Sara") une création avec informations.
 
 Q2.2.c
 - Une méthode statique de fabrique est une méthode static déclarée dans la classe qui crée et retourne une instance de cette classe. Elle joue le rôle d’un constructeur, mais avec un nom explicite qui décrit la manière de créer l’objet.
@@ -41,17 +46,23 @@ Les message s'affichant:
 Voiture Blanche créée.
 Voiture Blanche détruite.
 Fin du script.
-- Explication : unset($maVoiture) supprime la dernière référence vers l’objet, donc PHP appelle __destruct() immédiatement, avant le echo "Fin du script.".
+- unset supprime la dernière référence, donc __destruct() est appelé immédiatement.
 
 Q2.3.b
 Sans unset(...):
-//role de unset c'es determener l'ordre!
 Voiture Blanche créée.
 Fin du script.
 Voiture Blanche détruite.
-- Explication : L’objet reste référencé par $maVoiture jusqu’à la fin du script. Le destructeur est appelé à la fin de l’exécution, donc le message « détruite » passe après « Fin du script. ».
+- Sans unset, l’objet reste référencé jusqu’à la fin du script, donc la destruction passe en dernier.
 
 Q2.3.c
 - À la fin du script, les objets sont détruits dans l’ordre suivant : $b (Voiture Bleue) puis $a (Voiture Rouge), c’est-à-dire dans l’ordre inverse de leur création (dans mon test).
 - Remarque : la documentation PHP ne garantit pas cet ordre, il peut varier selon la version ou l’environnement.
 
+Q2.3.d
+J’ai ajouté dans Personne :
+public function __destruct() {
+    echo "Détruire " . __CLASS__ . "<br>";
+}
+
+__CLASS__ est une constante magique qui retourne le nom de la classe (Personne). Le message « Détruire Personne » s’affiche quand l’objet est détruit (fin du script, fin de la fonction ou unset).
