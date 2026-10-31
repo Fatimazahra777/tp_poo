@@ -45,6 +45,7 @@ Fin du script.
 
 Q2.3.b
 Sans unset(...):
+//role de unset c'es determener l'ordre!
 Voiture Blanche créée.
 Fin du script.
 Voiture Blanche détruite.
@@ -53,3 +54,4 @@ Voiture Blanche détruite.
 Q2.3.c
 - À la fin du script, les objets sont détruits dans l’ordre suivant : $b (Voiture Bleue) puis $a (Voiture Rouge), c’est-à-dire dans l’ordre inverse de leur création (dans mon test).
 - Remarque : la documentation PHP ne garantit pas cet ordre, il peut varier selon la version ou l’environnement.
+
