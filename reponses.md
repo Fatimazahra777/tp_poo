@@ -119,3 +119,30 @@ Deux situations pratiques :
 2. Logs et messages d’erreur / exceptions : on peut mettre l’objet directement dans un message de log ou un implode() sans écrire ->getName() partout.
 
 - Autres cas : templates HTML, comparaison avec des chaînes, in_array, etc.
+
+Q5.1
+Non, le mot de passe ne figure pas dans la chaîne sérialisée. Elle contient seulement nom et age : O:11:"Utilisateur":2:{s:3:"nom";s:5:"Alice";s:3:"age";i:25;}. C’est __serialize() qui choisit les données : motDePasse est volontairement exclu.
+
+Q5.2
+- Sans __serialize(), PHP sérialise toutes les propriétés, y compris les privées. La chaîne contient alors motDePasse avec la valeur secret123 en clair.
+
+- Risque : si la chaîne est stockée dans un fichier, une session, un cookie ou une base de données, quiconque y accède peut lire le mot de passe (fuite de données sensibles).
+
+Q5.3
+Après unserialize, $motDePasse vaut "" (chaîne vide), car __unserialize() le réinitialise.
+
+Dans une vraie application :
+- on ne stocke jamais un mot de passe en clair dans un objet ou une session ;
+- on ne conserve en base qu’un hash (password_hash()), vérifié avec password_verify() ;
+- après restauration, on demande à l’utilisateur de s’authentifier à nouveau ou on recharge ses données depuis la base.
+
+Q5.4
+Sécurité : unserialize() et PHP Object Injection
+
+Il ne faut jamais appeler unserialize() sur des données venant de l’utilisateur (cookie, formulaire, paramètre d’URL…). Un attaquant peut fabriquer une chaîne qui crée des objets de n’importe quelle classe de l’application. PHP exécute alors automatiquement leurs méthodes magiques (__wakeup, __unserialize, __destruct…), ce qui peut permettre des actions dangereuses : suppression de fichiers, injection SQL, voire exécution de code (attaque par « chaîne de gadgets »). C’est la vulnérabilité PHP Object Injection.
+
+Alternatives :
+- utiliser json_encode() / json_decode() pour échanger des données (JSON ne contient que des données, pas d’objets exécutables) ;
+- si on doit absolument utiliser unserialize(), interdire la création d’objets : unserialize($data, ['allowed_classes' => false]) ;
+- signer les données (HMAC) pour vérifier qu’elles n’ont pas été modifiées.
+
