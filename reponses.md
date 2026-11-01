@@ -84,6 +84,8 @@ public function __destruct() {
 
 __CLASS__ est une constante magique qui retourne le nom de la classe (Personne). Le message « Détruire Personne » s’affiche quand l’objet est détruit (fin du script, fin de la fonction ou unset).
 
+partie 3:
+
 Q3.1
 
 Les quatre méthodes sont complétées dans le code ci-dessus. Résultats : Hachimi, bool(true), bool(false), puis le message « Propriété telephone inexistante ».
@@ -116,6 +118,8 @@ if ($name === 'nom') {
 
 Test : $p->nom = "A"; lance l’exception, attrapée par try/catch, qui affiche le message d’erreur.
 
+partie 4:
+
 Q4.1
 
 Pourquoi getAge() (private) fonctionne ici ?
@@ -143,6 +147,8 @@ Deux situations pratiques :
 2. Logs et messages d’erreur / exceptions : on peut mettre l’objet directement dans un message de log ou un implode() sans écrire ->getName() partout.
 
 - Autres cas : templates HTML, comparaison avec des chaînes, in_array, etc.
+
+partie 5:
 
 Q5.1
 
@@ -173,6 +179,8 @@ Alternatives :
 - utiliser json_encode() / json_decode() pour échanger des données (JSON ne contient que des données, pas d’objets exécutables) ;
 - si on doit absolument utiliser unserialize(), interdire la création d’objets : unserialize($data, ['allowed_classes' => false]) ;
 - signer les données (HMAC) pour vérifier qu’elles n’ont pas été modifiées.
+
+partie 6:
 
 Q6.1.b
 
@@ -212,6 +220,8 @@ $this->dateNaissance est private dans Personne : seule Personne y a accès, mêm
 Q6.4.c
 
 Réutiliser parent::__toString() évite de dupliquer le code (principe DRY). Si le format de Personne change, Etudiant en bénéficie automatiquement, et le code est plus court et plus facile à maintenir.
+
+partie 7:
 
 Q7.1
 
