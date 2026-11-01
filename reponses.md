@@ -79,6 +79,7 @@ Q3.2
 - Avec __set : PHP n’interdit plus l’accès, il appelle automatiquement __set("nom", "X"). L’affectation se fait alors depuis l’intérieur de la classe, où l’accès à une propriété privée est autorisé.
 
 Q3.3
+
 Oui, __set peut casser l’encapsulation si on écrit $this->$name = $value; sans aucun contrôle : n’importe qui peut alors tout modifier depuis l’extérieur, comme si les propriétés étaient publiques.
 Solutions :
 
