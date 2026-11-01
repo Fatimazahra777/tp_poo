@@ -94,3 +94,28 @@ if ($name === 'nom') {
 }
 
 Test : $p->nom = "A"; lance l’exception, attrapée par try/catch, qui affiche le message d’erreur.
+
+Q4.1
+Pourquoi getAge() (private) fonctionne ici ?
+
+Parce que __toString() est une méthode de la même classe. Une méthode private n’est interdite qu’depuis l’extérieur de la classe ; à l’intérieur, on peut l’appeler avec $this->getAge(). C’est l’idée de l’encapsulation : le calcul de l’âge reste un détail interne, et seul le résultat est visible via echo $p.
+
+Q4.2
+public function __toString(): string {
+    return 25;   // entier
+}
+
+En mode normal (sans strict_types) : PHP convertit l’entier en chaîne "25", ça marche et affiche 25.
+Avec declare(strict_types=1); : TypeError: Return value must be of type string, int returned.
+Si on retire le type : string et qu’on retourne un entier, PHP 8 le convertit aussi en chaîne (anciennement PHP 7 : Return value must be of type string).
+
+Q4.3
+Intérêt de __toString() par rapport à getName()
+
+__toString() permet à l’objet d’être converti automatiquement en chaîne, sans appeler une méthode à la main.
+
+Deux situations pratiques :
+1. Affichage direct : echo $p; ou concaténation "Bonjour " . $p, ou dans une boucle foreach (comme à la partie 6.4 avec les étudiants).
+2. Logs et messages d’erreur / exceptions : on peut mettre l’objet directement dans un message de log ou un implode() sans écrire ->getName() partout.
+
+- Autres cas : templates HTML, comparaison avec des chaînes, in_array, etc.
