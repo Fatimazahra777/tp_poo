@@ -66,3 +66,31 @@ public function __destruct() {
 }
 
 __CLASS__ est une constante magique qui retourne le nom de la classe (Personne). Le message « Détruire Personne » s’affiche quand l’objet est détruit (fin du script, fin de la fonction ou unset).
+
+Q3.1
+Les quatre méthodes sont complétées dans le code ci-dessus. Résultats : Hachimi, bool(true), bool(false), puis le message « Propriété telephone inexistante ».
+
+- isset retourne true après l’affectation car nom vaut « Hachimi ».
+- Après unset, __unset remet nom à "", donc __isset retourne false.
+- telephone n’existe pas dans la classe : __set affiche un message et ne crée pas la propriété.
+
+Q3.2
+- Sans __set et avec nom privée : Fatal error: Cannot access private property Personne::$nom.
+- Avec __set : PHP n’interdit plus l’accès, il appelle automatiquement __set("nom", "X"). L’affectation se fait alors depuis l’intérieur de la classe, où l’accès à une propriété privée est autorisé.
+
+Q3.3
+Oui, __set peut casser l’encapsulation si on écrit $this->$name = $value; sans aucun contrôle : n’importe qui peut alors tout modifier depuis l’extérieur, comme si les propriétés étaient publiques.
+Solutions :
+
+- valider la valeur dans __set, propriété par propriété (if / match) ;
+- utiliser des setters dédiés (setNom()...) avec validation ;
+- limiter les propriétés modifiables à une liste blanche.
+
+Q3.4
+if ($name === 'nom') {
+    if (!is_string($value) || strlen(trim($value)) < 2) {
+        throw new InvalidArgumentException("Le nom doit contenir au moins 2 caractères");
+    }
+}
+
+Test : $p->nom = "A"; lance l’exception, attrapée par try/catch, qui affiche le message d’erreur.
