@@ -146,3 +146,34 @@ Alternatives :
 - si on doit absolument utiliser unserialize(), interdire la création d’objets : unserialize($data, ['allowed_classes' => false]) ;
 - signer les données (HMAC) pour vérifier qu’elles n’ont pas été modifiées.
 
+Q6.1.b
+Non, $c->miauler() provoque Fatal error: Call to undefined method Chien::miauler(). La méthode miauler() est définie dans Chat, pas dans Chien ni dans Animal. Un objet n’hérite que des méthodes de ses classes parentes, pas de celles d’une classe « sœur ».
+
+Q6.2.a
+Si on supprime parent::__construct($nom), le constructeur du parent n’est jamais exécuté, donc $nom n’est pas initialisé. Lors de presentation(), on obtient : Typed property PersonneSimple::$nom must not be accessed before initialization. En PHP, le constructeur du parent n’est pas appelé automatiquement quand la classe fille définit son propre constructeur.
+
+Q6.2.b
+$nom est protected pour que la classe fille (Etudiant) puisse y accéder avec $this->nom (dans presentation(), par exemple). Avec private, seule Personne y aurait accès. Et avec public, on casserait l’encapsulation.
+
+Q6.3.a – Les 3 erreurs
+1. Fatal error: Cannot override final method Base::afficher()
+2. Fatal error: Class SousOutil cannot extend final class Outil
+3. Fatal error: Uncaught Error: Cannot modify readonly property Produit::$reference
+
+Q6.3.b
+readonly : un identifiant (id, reference), une date de création, l’ISBN d’un livre : des valeurs qui ne doivent plus changer après l’initialisation.
+final : une méthode sensible (vérification de sécurité, calcul d’un paiement) qu’on ne veut pas voir redéfinie, ou une classe utilitaire/de configuration qu’on ne veut pas étendre.
+
+Q6.4 – Code
+Voir Personne et Etudiant dans le fichier ci-dessus.
+
+Q6.4.a
+Si getAge() est private dans Personne, l’appel $this->getAge() depuis Etudiant donne Call to private method Personne::getAge() from scope Etudiant. Il faut la déclarer protected (ou public) pour que ça fonctionne.
+
+Q6.4.b
+$this->dateNaissance est private dans Personne : seule Personne y a accès, même ses classes filles n’y accèdent pas. En lecture on obtient Warning: Undefined property: Etudiant::$dateNaissance, et en écriture PHP crée une propriété dynamique distincte (mauvaise pratique). Un Etudiant est une Personne, mais private limite l’accès à la classe qui déclare la propriété. Solution : protected ou un getter.
+
+Q6.4.c
+Réutiliser parent::__toString() évite de dupliquer le code (principe DRY). Si le format de Personne change, Etudiant en bénéficie automatiquement, et le code est plus court et plus facile à maintenir.
+
+
