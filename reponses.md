@@ -176,4 +176,37 @@ $this->dateNaissance est private dans Personne : seule Personne y a accès, mêm
 Q6.4.c
 Réutiliser parent::__toString() évite de dupliquer le code (principe DRY). Si le format de Personne change, Etudiant en bénéficie automatiquement, et le code est plus court et plus facile à maintenir.
 
+Q7.1
+- Erreur de syntaxe:
+
+Dans un_an(), l’expression $this->montant 1 * $this->interet / 100 n’a pas d’opérateur entre $this->montant et 1 (il manque un +). PHP lance une Parse error.
+
+Q7.2
+- Formule correcte:
+
+Montant après un an avec un intérêt de t % :
+montant × (1 + t / 100)
+
+En PHP : $this->montant = $this->montant * (1 + $this->interet / 100);
+
+Même avec le + ajouté, la formule de l’étudiant montant * (montant + 1 * interet / 100) est fausse : elle multiplie le montant par lui-même (montant × montant), donc le montant explose au lieu d’augmenter de t %.
+
+Q7.3
+- Ordre des paramètres:
+
+Non, il n’est pas cohérent : l’énoncé dit « un montant initial et un intérêt », alors que le constructeur est ($interet, $montantInitial).
+
+Risque : les deux paramètres sont des nombres, donc si on les inverse à l’appel, PHP ne signale aucune erreur. Par exemple new Compte(400, 10) avec l’ancien ordre créerait un compte de 10 DH à 400 % au lieu de 400 DH à 10 %. L’erreur est silencieuse et très difficile à détecter.
+
+Q7.4
+- Code corrigé:
+
+Corrections apportées :
+
+- ajout de l’opérateur manquant et formule correcte montant × (1 + t/100) ;
+- ordre des paramètres : montant initial, puis intérêt ;
+- types float sur les attributs et paramètres, types de retour void et float ;
+- affichage avec number_format($montant, 2, ',', ' ').
+
+
 
