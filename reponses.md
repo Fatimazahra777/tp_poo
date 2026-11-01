@@ -88,6 +88,7 @@ Solutions :
 - limiter les propriétés modifiables à une liste blanche.
 
 Q3.4
+
 if ($name === 'nom') {
     if (!is_string($value) || strlen(trim($value)) < 2) {
         throw new InvalidArgumentException("Le nom doit contenir au moins 2 caractères");
@@ -97,11 +98,13 @@ if ($name === 'nom') {
 Test : $p->nom = "A"; lance l’exception, attrapée par try/catch, qui affiche le message d’erreur.
 
 Q4.1
+
 Pourquoi getAge() (private) fonctionne ici ?
 
 Parce que __toString() est une méthode de la même classe. Une méthode private n’est interdite qu’depuis l’extérieur de la classe ; à l’intérieur, on peut l’appeler avec $this->getAge(). C’est l’idée de l’encapsulation : le calcul de l’âge reste un détail interne, et seul le résultat est visible via echo $p.
 
 Q4.2
+
 public function __toString(): string {
     return 25;   // entier
 }
@@ -111,6 +114,7 @@ Avec declare(strict_types=1); : TypeError: Return value must be of type string, 
 Si on retire le type : string et qu’on retourne un entier, PHP 8 le convertit aussi en chaîne (anciennement PHP 7 : Return value must be of type string).
 
 Q4.3
+
 Intérêt de __toString() par rapport à getName()
 
 __toString() permet à l’objet d’être converti automatiquement en chaîne, sans appeler une méthode à la main.
@@ -122,14 +126,17 @@ Deux situations pratiques :
 - Autres cas : templates HTML, comparaison avec des chaînes, in_array, etc.
 
 Q5.1
+
 Non, le mot de passe ne figure pas dans la chaîne sérialisée. Elle contient seulement nom et age : O:11:"Utilisateur":2:{s:3:"nom";s:5:"Alice";s:3:"age";i:25;}. C’est __serialize() qui choisit les données : motDePasse est volontairement exclu.
 
 Q5.2
+
 - Sans __serialize(), PHP sérialise toutes les propriétés, y compris les privées. La chaîne contient alors motDePasse avec la valeur secret123 en clair.
 
 - Risque : si la chaîne est stockée dans un fichier, une session, un cookie ou une base de données, quiconque y accède peut lire le mot de passe (fuite de données sensibles).
 
 Q5.3
+
 Après unserialize, $motDePasse vaut "" (chaîne vide), car __unserialize() le réinitialise.
 
 Dans une vraie application :
@@ -138,6 +145,7 @@ Dans une vraie application :
 - après restauration, on demande à l’utilisateur de s’authentifier à nouveau ou on recharge ses données depuis la base.
 
 Q5.4
+
 Sécurité : unserialize() et PHP Object Injection
 
 Il ne faut jamais appeler unserialize() sur des données venant de l’utilisateur (cookie, formulaire, paramètre d’URL…). Un attaquant peut fabriquer une chaîne qui crée des objets de n’importe quelle classe de l’application. PHP exécute alors automatiquement leurs méthodes magiques (__wakeup, __unserialize, __destruct…), ce qui peut permettre des actions dangereuses : suppression de fichiers, injection SQL, voire exécution de code (attaque par « chaîne de gadgets »). C’est la vulnérabilité PHP Object Injection.
@@ -148,41 +156,52 @@ Alternatives :
 - signer les données (HMAC) pour vérifier qu’elles n’ont pas été modifiées.
 
 Q6.1.b
+
 Non, $c->miauler() provoque Fatal error: Call to undefined method Chien::miauler(). La méthode miauler() est définie dans Chat, pas dans Chien ni dans Animal. Un objet n’hérite que des méthodes de ses classes parentes, pas de celles d’une classe « sœur ».
 
 Q6.2.a
+
 Si on supprime parent::__construct($nom), le constructeur du parent n’est jamais exécuté, donc $nom n’est pas initialisé. Lors de presentation(), on obtient : Typed property PersonneSimple::$nom must not be accessed before initialization. En PHP, le constructeur du parent n’est pas appelé automatiquement quand la classe fille définit son propre constructeur.
 
 Q6.2.b
+
 $nom est protected pour que la classe fille (Etudiant) puisse y accéder avec $this->nom (dans presentation(), par exemple). Avec private, seule Personne y aurait accès. Et avec public, on casserait l’encapsulation.
 
 Q6.3.a – Les 3 erreurs
+
 1. Fatal error: Cannot override final method Base::afficher()
 2. Fatal error: Class SousOutil cannot extend final class Outil
 3. Fatal error: Uncaught Error: Cannot modify readonly property Produit::$reference
 
 Q6.3.b
+
 readonly : un identifiant (id, reference), une date de création, l’ISBN d’un livre : des valeurs qui ne doivent plus changer après l’initialisation.
 final : une méthode sensible (vérification de sécurité, calcul d’un paiement) qu’on ne veut pas voir redéfinie, ou une classe utilitaire/de configuration qu’on ne veut pas étendre.
 
 Q6.4 – Code
+
 Voir Personne et Etudiant dans le fichier ci-dessus.
 
 Q6.4.a
+
 Si getAge() est private dans Personne, l’appel $this->getAge() depuis Etudiant donne Call to private method Personne::getAge() from scope Etudiant. Il faut la déclarer protected (ou public) pour que ça fonctionne.
 
 Q6.4.b
+
 $this->dateNaissance est private dans Personne : seule Personne y a accès, même ses classes filles n’y accèdent pas. En lecture on obtient Warning: Undefined property: Etudiant::$dateNaissance, et en écriture PHP crée une propriété dynamique distincte (mauvaise pratique). Un Etudiant est une Personne, mais private limite l’accès à la classe qui déclare la propriété. Solution : protected ou un getter.
 
 Q6.4.c
+
 Réutiliser parent::__toString() évite de dupliquer le code (principe DRY). Si le format de Personne change, Etudiant en bénéficie automatiquement, et le code est plus court et plus facile à maintenir.
 
 Q7.1
+
 - Erreur de syntaxe:
 
 Dans un_an(), l’expression $this->montant 1 * $this->interet / 100 n’a pas d’opérateur entre $this->montant et 1 (il manque un +). PHP lance une Parse error.
 
 Q7.2
+
 - Formule correcte:
 
 Montant après un an avec un intérêt de t % :
@@ -193,6 +212,7 @@ En PHP : $this->montant = $this->montant * (1 + $this->interet / 100);
 Même avec le + ajouté, la formule de l’étudiant montant * (montant + 1 * interet / 100) est fausse : elle multiplie le montant par lui-même (montant × montant), donc le montant explose au lieu d’augmenter de t %.
 
 Q7.3
+
 - Ordre des paramètres:
 
 Non, il n’est pas cohérent : l’énoncé dit « un montant initial et un intérêt », alors que le constructeur est ($interet, $montantInitial).
@@ -200,6 +220,7 @@ Non, il n’est pas cohérent : l’énoncé dit « un montant initial et un int
 Risque : les deux paramètres sont des nombres, donc si on les inverse à l’appel, PHP ne signale aucune erreur. Par exemple new Compte(400, 10) avec l’ancien ordre créerait un compte de 10 DH à 400 % au lieu de 400 DH à 10 %. L’erreur est silencieuse et très difficile à détecter.
 
 Q7.4
+
 - Code corrigé:
 
 Corrections apportées :
