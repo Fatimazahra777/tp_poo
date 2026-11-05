@@ -65,7 +65,11 @@ final class Outil {
 }
 
 class Produit {
-    public function __construct(public readonly string $reference) {}
+    public string $reference;
+    
+    public function __construct(string $reference) {
+        $this -> reference = $reference;
+    }
 }
 
 echo "<h3>6.3</h3>";
